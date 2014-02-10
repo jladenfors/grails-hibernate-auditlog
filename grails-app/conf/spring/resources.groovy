@@ -1,4 +1,4 @@
-import grails.plugin.hibernateaudit.HibernateAuditLogPluginSupport
+import grails.plugin.mongoaudit.MongoAuditLogPluginSupport
 
 // added for testing purposes
-beans = HibernateAuditLogPluginSupport.doWithSpring
+beans = MongoAuditLogPluginSupport.doWithSpring

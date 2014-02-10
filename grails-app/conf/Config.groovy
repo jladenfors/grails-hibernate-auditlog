@@ -1,4 +1,4 @@
-import grails.plugin.hibernateaudit.domain.AuditLogType
+import grails.plugin.mongoaudit.domain.AuditLogType
 
 // All audit log configuration variables
 auditLog.disabled = false        // globally disable audit logging
@@ -21,9 +21,5 @@ auditLog.truncateLength = null   // can provide a maximum length for values in t
 
 grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
 
-log4j = {
-         error 'org.codehaus.groovy.grails.plugins',            // plugins
-               'org.springframework',
-               'org.hibernate',
-               'net.sf.ehcache.hibernate'
-}
+grails.views.default.codec="none" // none, html, base64
+grails.views.gsp.encoding="UTF-8"

@@ -1,26 +1,14 @@
-<plugin name='hibernate-audit-log' version='0.7-SNAPSHOT' grailsVersion='2.1 &gt; *'>
-  <author>Andre Steingress</author>
-  <authorEmail>me@andresteingress.com</authorEmail>
-  <title>Grails Hibernate Audit Event Log Plugin</title>
-  <description>Enables audit logging for Grails domain classes based on the Hibernate datastore.
+<plugin name='mongo-audit-log' version='0.9-SNAPSHOT' grailsVersion='2.3 &gt; *'>
+  <author>Jonas Ladenfors</author>
+  <authorEmail>jonas.ladenfors@gmail.com</authorEmail>
+  <title>Grails mongo Audit Event Log Plugin</title>
+  <description>Enables audit logging for Grails domain classes on the Mongo datastore based on Andre Steingress hibernate audit work. 
 </description>
-  <documentation>https://github.com/andresteingress/grails-auditlog</documentation>
-  <type>HibernateAuditLogGrailsPlugin</type>
+  <documentation>https://github.com/jladenfors/grails-hibernate-auditlog</documentation>
+  <type>MongoAuditLogGrailsPlugin</type>
   <resources>
+    <resource>BootStrap</resource>
     <resource>spring.resources</resource>
-    <resource>grails.plugin.hibernateaudit.AuditLogEvent</resource>
+    <resource>grails.plugin.mongoaudit.AuditLogEvent</resource>
   </resources>
-  <repositories>
-    <repository name='grailsCentral' url='http://grails.org/plugins' />
-    <repository name='http://repo.grails.org/grails/core' url='http://repo.grails.org/grails/core/' />
-    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
-  </repositories>
-  <dependencies />
-  <plugins>
-    <runtime>
-      <plugin group='org.grails.plugins' name='hibernate' version='2.1.5' />
-    </runtime>
-  </plugins>
-  <runtimePluginRequirements />
-  <behavior />
 </plugin>

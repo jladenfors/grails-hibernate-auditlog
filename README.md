@@ -1,7 +1,7 @@
-Grails Hibernate Audit Log Plugin
+Grails Mongo Audit Log Plugin
 ===============
 
-Grails plugin enabling _audit logging_ for Hibernate domain classes.
+Grails plugin enabling _audit logging_ for Mongo domain classes.
 
 Here is a default configuration:
 
