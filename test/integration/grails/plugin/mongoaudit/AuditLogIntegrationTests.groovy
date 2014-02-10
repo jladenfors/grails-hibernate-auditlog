@@ -15,8 +15,9 @@ class AuditLogIntegrationTests extends GroovyTestCase {
 
     AuditLogListener auditLogListener
 
-    @Before
-    void setUp() {
+    
+    void pretest() {
+        AuditLogEvent.collection.drop()
         auditLogListener.defaultInsertAuditLogType = AuditLogType.FULL
         auditLogListener.defaultUpdateAuditLogType = AuditLogType.FULL
         auditLogListener.defaultDeleteAuditLogType = AuditLogType.FULL
@@ -29,6 +30,7 @@ class AuditLogIntegrationTests extends GroovyTestCase {
 
     @Test
     void insertEvent() {
+        pretest()
         def p = new Tester(name: "Andre", surName: "Steingress").save(flush: true)
 
         def auditLog = AuditLogEvent.findByPersistedObjectIdAndClassName(p.id as String, Tester.class.simpleName)
@@ -48,6 +50,7 @@ class AuditLogIntegrationTests extends GroovyTestCase {
 
     @Test
     void insertDisabledEvent() {
+        pretest()
         auditLogListener.defaultInsertAuditLogType = AuditLogType.NONE
 
         def p = new Tester(name: "Andre", surName: "Steingress").save(flush: true)
@@ -58,6 +61,7 @@ class AuditLogIntegrationTests extends GroovyTestCase {
 
     @Test
     void updateEvent() {
+        pretest()
         def p = new Tester(name: "Andre", surName: "Steingress").save(flush: true)
 
         p.name = 'Maxi'
@@ -84,7 +88,7 @@ class AuditLogIntegrationTests extends GroovyTestCase {
 
     @Test
     void insertEventWithLocalLists() {
-
+        pretest()
         auditLogListener.defaultIncludeList = []
         auditLogListener.defaultExcludeList = []
 
@@ -107,6 +111,7 @@ class AuditLogIntegrationTests extends GroovyTestCase {
 
     @Test
     void insertEventWithShortAuditLogType() {
+        pretest()
         def p = new TestPerson3(name: "Andre", surName: "Steingress").save(flush: true)
 
         def auditLog = AuditLogEvent.findByPersistedObjectIdAndClassName(p.id as String, TestPerson3.class.simpleName)
@@ -123,6 +128,7 @@ class AuditLogIntegrationTests extends GroovyTestCase {
 
     @Test
     void updateEventWithShortAuditType() {
+        pretest()
         def p = new TestPerson3(name: "Andre", surName: "Steingress").save(flush: true)
 
         p.name = '"Maxi"'
@@ -148,6 +154,7 @@ class AuditLogIntegrationTests extends GroovyTestCase {
 
     @Test
     void updateEventWithOneToOneRelationship() {
+        pretest()
         auditLogListener.defaultInsertAuditLogType = AuditLogType.SHORT
 
         def parent = new TestPerson4().save(flush: true)

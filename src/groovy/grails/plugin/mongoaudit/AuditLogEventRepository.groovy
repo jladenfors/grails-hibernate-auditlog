@@ -23,7 +23,7 @@ class AuditLogEventRepository {
         def type = domain.insertAuditLogType()
         if (type == AuditLogType.NONE) return
 
-        auditLogListener.runInSession { MongoSession session ->
+        domain.domain.withNewSession{ MongoSession session ->
             if (type in [AuditLogType.FULL, AuditLogType.MEDIUM])  {
                 def map = domain.toMap()
                 map.each { key, value ->
@@ -34,6 +34,7 @@ class AuditLogEventRepository {
             if (type == AuditLogType.SHORT)  {
                 saveAuditLogEventSHORT(session, EVENT_NAME_INSERT, domain)
             }
+            session.flush()
         }
     }
 
@@ -44,8 +45,8 @@ class AuditLogEventRepository {
         Collection<String> dirtyProperties = domain.dirtyPropertyNames
         if (!dirtyProperties) return
 
-        auditLogListener.runInSession { MongoSession session ->            
-            if (type in [AuditLogType.FULL, AuditLogType.MEDIUM])  {                
+        domain.domain.withNewSession{ MongoSession session ->
+            if (type in [AuditLogType.FULL, AuditLogType.MEDIUM])  {
                 Map newMap = domain.toMap(dirtyProperties)
                 Map oldMap = domain.toPersistentValueMap(dirtyProperties)
 
@@ -60,6 +61,7 @@ class AuditLogEventRepository {
             if (type == AuditLogType.SHORT)  {
                 saveAuditLogEventSHORT(session, EVENT_NAME_UPDATE, domain)
             }
+            session.flush()
         }
     }
 
@@ -67,7 +69,7 @@ class AuditLogEventRepository {
         def type = domain.deleteAuditLogType()
         if (type == AuditLogType.NONE) return
 
-        auditLogListener.runInSession { MongoSession session ->
+        domain.domain.withNewSession{ MongoSession session ->
             if (type in [AuditLogType.FULL, AuditLogType.MEDIUM])  {
                 def map = domain.toMap()
                 map.each { key, value ->
@@ -78,11 +80,12 @@ class AuditLogEventRepository {
             if (type == AuditLogType.SHORT)  {
                 saveAuditLogEventSHORT(session, EVENT_NAME_DELETE, domain)
             }
+            session.flush()
         }
     }
 
 
-        protected void saveAuditLogEventFULL(MongoSession session, String eventName, AuditableDomainObject domain, String key, value, oldValue = null) {
+    protected void saveAuditLogEventFULL(MongoSession session, String eventName, AuditableDomainObject domain, String key, value, oldValue = null) {
         def audit = auditLogEventPreparation.prepare new AuditLogEvent(
                 actor: auditLogListener.getActor(),
                 uri: auditLogListener.getUri(),
@@ -94,7 +97,7 @@ class AuditLogEventRepository {
                 newValue: auditLogConversionService.convert(value))
 
         if (!audit.validate()) throw new RuntimeException("Audit log event validation failed: ${audit.errors}")
-        
+
         session.insert(audit)
     }
 
@@ -110,7 +113,7 @@ class AuditLogEventRepository {
                 newValue: auditLogConversionService.convert(value))
 
         if (!audit.validate()) throw new RuntimeException("Audit log event validation failed: ${audit.errors}")
-        
+
         session.insert(audit)
     }
 

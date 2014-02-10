@@ -5,7 +5,6 @@ import grails.plugin.mongoaudit.reflect.AuditableClosureReader
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.grails.datastore.mapping.core.Datastore
 import org.grails.datastore.mapping.engine.event.*
-import org.grails.datastore.mapping.model.MappingContext
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.springframework.context.ApplicationEvent
 import org.springframework.web.context.request.RequestContextHolder
@@ -40,9 +39,7 @@ class AuditLogListener extends AbstractPersistenceEventListener  {
 
     @Override
     boolean supportsEventType(Class<? extends ApplicationEvent> eventType) {        
-        return eventType.isAssignableFrom(PostInsertEvent) ||
-                eventType.isAssignableFrom(PreUpdateEvent) ||
-                eventType.isAssignableFrom(PreDeleteEvent)
+        return true;
     }
     public boolean supportsSourceType(final Class<?> sourceType) {
         // ensure that this listener only handles its events (e.g. if Mongo and Redis are both installed)        
@@ -89,7 +86,7 @@ class AuditLogListener extends AbstractPersistenceEventListener  {
             log.debug "Audit logging: ${event.eventType.name()} for ${event.entityObject.class.name}"            
             switch(event.eventType) {
                 case EventType.PreInsert:                    
-                    onPreInsert(event as PostInsertEvent)
+                    onPreInsert(event as PreInsertEvent)
                     break
                 case EventType.PreUpdate:                    
                     onPreUpdate(event as PreUpdateEvent)
@@ -98,7 +95,7 @@ class AuditLogListener extends AbstractPersistenceEventListener  {
                     onPreDelete(event as PreDeleteEvent)
                     break
                 default:
-                    log.info("Unknown event type : {}" ,event.eventType);
+                    log.debug("Unknown event type " + event.eventType);
             }
         }
     }
@@ -108,7 +105,7 @@ class AuditLogListener extends AbstractPersistenceEventListener  {
         auditLogEventActions.onBeforeDelete(domain)
     }
 
-    protected void onPreInsert(PostInsertEvent event) {
+    protected void onPreInsert(PreInsertEvent event) {
         def domain = event.entityObject
         auditLogEventActions.onInsert(domain)
     }
